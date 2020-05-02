@@ -20,7 +20,7 @@
                 $stmt = $this->connect()->prepare($sql);
                 $stmt->bind_params('s', '%'.(string)$Email.'%');
                 /* bind variables to prepared statement */
-                /* 0k */
+                
                 $stmt->bind_result($Id, $mio);
                 $risposta="";
                 /* fetch values */
