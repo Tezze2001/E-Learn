@@ -1,57 +1,21 @@
 <?php
-    require_once ('./../Classi/Database.php');
-    if (isset($_POST['query']))
+    require_once ('./../Classi/Query.php');
+    if (isset($_POST['query']) && isset($_POST['cont']))
     {
-        class Temp extends Database
+        $db = new Query();
+        $email = $db->selectInsegnanti($_POST['query']);
+        if ($email !="No matches")
         {
-            public function __construct()
-            {
-                parent::__construct();
-            }
-            public function selectAll($Email)
-            {
-                $Id="";
-                $mio="";
-                $sql = "SELECT Id, Email 
-                        FROM Utenti
-                        WHERE
-                            Email LIKE ?";
-
-                $stmt = $this->connect()->prepare($sql);
-                $stmt->bind_params('s', '%'.(string)$Email.'%');
-                /* bind variables to prepared statement */
-                
-                $stmt->bind_result($Id, $mio);
-                $risposta="";
-                /* fetch values */
-                while ($stmt->fetch()) {
-                    $risposta = $Id.' '.$mio.'|';
-                }
-                return $risposta;
-            }
+            echo '
+            <div class="row" id="i'.(string)($_POST['cont']+1).'">
+                <div class="col">
+                    <input disabled type="text" name="i'.(string)($_POST['cont']+1).'" class="form-control insegnanti" value="'.$email.'">
+                </div>
+                <div class="col">
+                    <img width="16px" height="16px" onclick="cancella(\'i'.(string)($_POST['cont']+1).'\')" src="https://image.flaticon.com/icons/svg/446/446046.svg" alt="cancella">
+                </div>
+            </div>
+            ';
         }
-        $db = new Temp();
-        echo $db->selectAll($_POST['query']);
-
-        /*$db = new Temp();
-        $sql = "SELECT Id, Email 
-                FROM Utenti
-                WHERE
-                    Email LIKE %?%";
-
-        $stmt = $db->connect()->prepare($sql);
-        $stmt->bind_params('s', $_POST['query']);
-        /* bind variables to prepared statement 
-        $stmt->bind_result($Id, $Email);
-        $risposta="";
-        /* fetch values 
-        while ($stmt->fetch()) {
-            $risposta = $Id.' '.$Email.'|';
-        }
-        echo $risposta;*/
-    }
-    else
-    {
-        echo "Nessun utente trovato";
     }
 ?>
