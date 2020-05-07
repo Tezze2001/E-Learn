@@ -2,8 +2,6 @@
     session_start();
     require_once ('./../Classi/Utente.php');
     require_once ('./../Classi/Corso.php');
-
-
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -85,29 +83,43 @@
         </div>
     </div>
 </div>
-
     <script>
+
+
+        /* Metodo per rimuovere l'insegnate aggiunto */
         function cancella(elemento)
         {
             $('#'+elemento ).remove();
         }
-        function trova(selettore, Utente)
+
+        /* Metodo per trovare se un insegnante è già stato aggiunto */
+
+        function trova(insegnante)
         {
+            let total = [];
             let trovato = false;
-            let num = $(selettore).index()+1;
-            for (let j=0; j< num; j++)
-            {   
-                console.log($(selettore+':nth-child('+j+')').text());
-                if ((!Utente=="") && ($(selettore+':nth-child('+j+')').text()==Utente))
+            $('#risultatoInsegnanti').find('input.insegnanti').each(function(index, elem){
+                total.push(elem.value);
+            });
+            console.log(total);
+            for (let i=0; i<total.length; i++)
+            {
+                if (total[i]===insegnante)
                 {
-                    trovato = true;
-                    return trovato;
+                    trovato = true
+                    break;
                 }
             }
             return trovato;
         }
 
+        /* Evento richiamato quando la pagina è caricata */
         $(document).ready(function(){
+            let utenteJson = '<?php echo $_SESSION["Utente"] ?>';
+            let utenteObj = JSON.parse(utenteJson); // oggetto Utente della sessione preso da php
+
+            console.log(utenteObj.Email);
+
             function richiesta(email, cont)
             {
                 $.post({
@@ -115,20 +127,25 @@
                     data:{query:email, cont:cont},
                     success:
                         function(data)
-                        {   
-                            //console.log({data});
+                        {
                             $('#risultatoInsegnanti').append(data);
                         }
                 });
 
             } 
             $('#addInsegnante').click(function(){
-                //debugger;
                 let email = $('#insertInsegnanti').val();
-                if(email != '')
+                if(email != '' && email!==utenteObj.Email)
                 {
-                    let cont = $('input.insegnanti').length-1;
-                    richiesta(email, cont);
+                    if (!trova(email))
+                    {
+                        let cont = $('input.insegnanti').length-1;
+                        richiesta(email, cont);
+                    }
+                    else
+                    {
+                        alert('l\'utente è già stato inserito');
+                    }
                 }
                 else
                 {
