@@ -10,53 +10,32 @@
 
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Moodle</title>
 </head>
 <body class="text-center">
-    <?php 
+    <?php //t= metodo(accedi/registrati)   u= insegnante/studente
         if (isset($_GET["t"]) && isset($_GET["u"])) 
         {   
             switch($_GET["t"])
-            {
+            {//benvenuto in elearn(nome da scegliere)
                 //login
                 case "a":
-                    switch($_GET["u"])
-                    {
-                        case "s":
-                            echo '
-                                <form class="form-signin" action="./Autentificazione/Accedi.php" method="post">
-                                    <input style="display:none;" type="text" name="tipo" value="s">
-                                    <img class="mb-4" src="https://image.flaticon.com/icons/svg/991/991922.svg" alt="" width="72" height="72">
-                                    <h1 class="h3 mb-3 font-weight-normal"> Accedi come studente </h1>
-                                    <label for="inputEmail" class="sr-only">Email address</label>
-                                    <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                                    <label for="inputPassword" class="sr-only">Password</label>
-                                    <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                                    <a href="./?t=r&u=s"> Registrati </a>
-                                    <button class="btn btn-lg btn-warning btn-block" type="submit"> Accedi </button>
-                                    <!--<p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>-->
-                                </form>
-                                ';
-                            break;
-                        case "i":
-                            echo '
-                                <form class="form-signin" action="./Autentificazione/Accedi.php" method="post">
-                                    <input style="display:none;" type="text" name="tipo" value="i">
-                                    <img class="mb-4" src="https://image.flaticon.com/icons/svg/991/991922.svg" alt="" width="72" height="72">
-                                    <h1 class="h3 mb-3 font-weight-normal"> Accedi come studente </h1>
-                                    <label for="inputEmail" class="sr-only">Email address</label>
-                                    <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                                    <label for="inputPassword" class="sr-only">Password</label>
-                                    <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                                    <a href="./?t=r&u=s"> Registrati </a>
-                                    <button class="btn btn-lg btn-warning btn-block" type="submit"> Accedi </button>
-                                    <!--<p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>-->
-                                </form>
-                                ';
-                            break;
-                    }
+                    echo '
+                        <form class="form-signin" action="./Autentificazione/Accedi.php" method="post">
+                            <input style="display:none;" type="text" name="tipo" value="s">
+                            <img class="mb-4" src="https://image.flaticon.com/icons/svg/991/991922.svg" alt="" width="72" height="72">
+                            <h1 class="h3 mb-3 font-weight-normal"> Accedi</h1>
+                            <label for="inputEmail" class="sr-only">Email address</label>
+                            <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                            <label for="inputPassword" class="sr-only">Password</label>
+                            <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                            <a href="./?t=r&u=s"> Registrati </a>
+                            <button class="btn btn-lg btn-warning btn-block" type="submit"> Accedi </button>
+                            <!--<p class="mt-5 mb-3 text-muted">&copy; 2017-2019</p>-->
+                        </form>
+                        ';
                 break;
                 //register
                 case "r":
@@ -102,15 +81,44 @@
         else 
         {
             echo '
+            <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+              <div class="titolo">
+                <h2><strong>Benvenuto in E-Learn</strong></h2>
                 <form action="./">
+                  <input style="display:none;" name="t" type="text" value="a">
+                  <input style="display:none;" name="u" type="text" value="s">
+                  <input type="submit" class="button-1" style="width: 180px;" value="Accedi">
+                </form>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <form action="./">
+                      <input style="display:none;" name="t" type="text" value="r">
+                      <input style="display:none;" name="u" type="text" value="s">
+                      <input type="submit" class="button-1" value="Registrati come studente">
+                    </form>
+                  </div>
+                  <div class="col-sm-6">
+                    <form action="./">
+                      <input style="display:none;" name="t" type="text" value="r">
+                      <input style="display:none;" name="u" type="text" value="i">
+                      <input type="submit" class="button-1" value="Registrati come insegnante">
+                    </form> 
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3"></div>
+          </div>
+                
+            ';
+        }
+        /*
+            <form action="./">
                     <input style="display:none;" name="t" type="text" value="a">
                     <input style="display:none;" name="u" type="text" value="s">
-                    <input type="submit" value="Accedi come studente">
-                </form>
-                <form action="./">
-                    <input style="display:none;" name="t" type="text" value="a">
-                    <input style="display:none;" name="u" type="text" value="i">
-                    <input type="submit" value="Accedi come insegnante">
+                    <input type="submit" value="Accedi">
                 </form>
                 <form action="./">
                     <input style="display:none;" name="t" type="text" value="r">
@@ -122,8 +130,7 @@
                     <input style="display:none;" name="u" type="text" value="i">
                     <input type="submit" value="Registrati come insegnante">
                 </form>
-            ';
-        }
+        */
     ?><!--
     <script>
         function onWrite1(event) 

@@ -3,20 +3,20 @@ html,body
 height: 100%;
 }
 
-body 
+/*body 
 {
     background-image:    url(./IMG/bg.jpg);
     background-size:     cover;                      /* <------ */
-    background-repeat:   no-repeat;
+    /*background-repeat:   no-repeat;
     background-position: center center;              /* optional, center the image */
-    display: -ms-flexbox;
+    /*display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
     align-items: center;
     padding-top: 40px;
     padding-bottom: 40px;
     background-color: RGB(128,128,128,0.5);
-}
+}*/
 .bd-placeholder-img 
 {
     font-size: 1.125rem;
@@ -40,6 +40,7 @@ body
     max-width: 330px;
     padding: 15px;
     margin: auto;
+    margin-top: 120px;
     background: RGB(255,255,255,0.8);
 }
 .form-signin .checkbox 
@@ -81,4 +82,26 @@ body
     display: none;
     width: 16px;
     height: 16px;
+}
+.button-1 {
+    text-align: center;
+    background: #444;
+    border-radius: 3px;
+    color: #fff;
+    width: fit-content;
+    height: 50px;
+    font-size: 20px;
+    margin: 0 auto;
+    margin-top: 25px;
+    padding: 5px;
+}
+.button-1:hover {
+    background-color: #989d9e;
+    color: black;
+    
+}
+.titolo {
+    margin: 180px 0 40px 0;
+    padding: 0 10px;
+    text-align: center;
 }
