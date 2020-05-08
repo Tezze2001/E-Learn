@@ -28,7 +28,7 @@
         {
             //ricava l'oggetto passato tramite sessione
             $Utente = Utente::parseJsonToUtente($_SESSION['Utente']);
-
+            
             if($Utente->Tipologia =='i')
             {
                 echo '

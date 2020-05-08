@@ -1,5 +1,6 @@
 <?php
 require_once ('Database.php');
+require_once ('Utente.php');
 /**
  * Classe per la gestione dei corsi
  */
@@ -21,6 +22,11 @@ class Corso extends Database
      */
     private $Descrizione;
     /**
+     * @var int $Creatore id dell'utente che ha creato il corso
+     * @access private
+     */
+    private $Creatore;
+    /**
      * Costruttore
      * 
      * @throws Valori non validi
@@ -29,17 +35,28 @@ class Corso extends Database
     public function __construct()
     {
         parent::__construct();
-        if (func_num_args() == 2)
+        if (func_num_args() == 3)
         {
-            if ($this->Nome = $this->checkNome(func_get_arg(0))===false)
+            /*if ($this->Nome = $this->checkNome(func_get_arg(0))===false)
             {
                 throw new Exception('Valori non validi');
             }
 
-            if ($this->Descrizione = $this->checkNome(func_get_arg(1))===false)
+            if ($this->Descrizione = $this->checkDescrizione(func_get_arg(1))===false)
             {
                 throw new Exception('Valori non validi');
             }
+
+            if ($this->checkCreatore(func_get_arg(2))===false)
+            {
+                throw new Exception('Valori non validi');
+            }
+            echo func_get_arg(0);
+            echo func_get_arg(1);
+            die();*/
+            $this->Nome = func_get_arg(0);
+            $this->Descrizione =func_get_arg(1);
+            $this->checkCreatore(func_get_arg(2));
         }   
     }
     /**
@@ -52,14 +69,16 @@ class Corso extends Database
      */
     public function checkNome($nome)
     {
+        return $nome;
+        /*
         if (true)
         {
-            return true;
+            return $nome;
         }
         else
         {
             return false;
-        }
+        }*/
     }
     /**
      * Controllo SQL Injection della descrizione
@@ -71,13 +90,36 @@ class Corso extends Database
      */
     public function checkDescrizione($Descrizione)
     {
-        if (true)
+        return $Descrizione;
+        /*if (true)
         {
-            return true;
+            return $Descrizione;
         }
         else
         {
             return false;
+        }*/
+    }
+    /**
+     * Controllo SQL Injection del nome
+     * 
+     * @param Utente $Utente
+     * @return int $IdCreatore  ----> corretto
+     * @return boolean false    ----> errato
+     * @access public
+     */
+    public function checkCreatore($Utente)
+    {
+        $Utente = new Utente($Utente->Email,$Utente->Password,$Utente->Tipologia);
+        $ris= $Utente->existId();
+        if ($ris === false)
+        {
+            return false;
+        }
+        else
+        {
+            $this->Creatore = $ris;
+            return true;
         }
     }
     /**
@@ -109,18 +151,17 @@ class Corso extends Database
         }
     }
     /**
-     * Insert corso
+     * Insert corso in Corso
      * 
-     * @param string $Descrizione
      * 
      * @access public
      */
-    public function insertCorso($Descrizione)
+    public function insertCorso()
     {
-        $sql = "INSERT INTO Corsi(Nome, Descrizione) VALUES (?,?);";
+        $sql = "INSERT INTO Corsi(Nome, Descrizione, Creatore) VALUES (?,?,?);";
 
         $stmt = $this->connect()->prepare($sql);
-        $stmt->bind_param('ss', $this->Nome, $this->Descrizione);
+        $stmt->bind_param('ssi', $this->Nome, $this->Descrizione,$this->Creatore);
 
         $stmt->execute();
         $stmt->close();

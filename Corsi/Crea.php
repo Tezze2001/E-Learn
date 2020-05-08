@@ -2,6 +2,26 @@
     session_start();
     require_once ('./../Classi/Utente.php');
     require_once ('./../Classi/Corso.php');
+
+    if (isset($_SESSION['Utente']) && isset($_POST['nome']) && isset($_POST['descrizione']) && isset($_POST['contI']) && isset($_POST['contS']) && $_POST['contI']>=0 && $_POST['contS']>=0)
+    {
+        //insegnante2@admin.it
+        //ricava l'oggetto passato tramite sessione
+        $Utente = Utente::parseJsonToUtente($_SESSION['Utente']);
+
+        //(Utente) $Utente->existId();
+        try
+        {
+            $corso = new Corso($_POST['nome'], $_POST['descrizione'], $Utente);
+            $corso ->insertCorso();
+        }
+        catch (Exception $e)
+        {
+            echo $e;
+        }
+        
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -14,7 +34,7 @@
 
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="page.css">
+    <link rel="stylesheet" href="./../CSS/CreateCourse.css">
 </head>
 <body>
     
@@ -26,14 +46,14 @@
             <center>
                 <h1>Crea un corso</h1>
             </center>
-            <form action="./" method="POST">
+            <form action="./Crea.php" method="POST">
                 <div class="form-group">
                     <label for="nome">Nome</label>
-                    <input type="text" class="form-control" id="nome" required>
+                    <input type="text" name="nome" class="form-control" id="nome" required>
                 </div>
                 <div class="form-group">
                     <label for="descrizione">Descrizione</label>
-                    <textarea class="form-control" id="descrizione" required>
+                    <textarea name="descrizione" class="form-control" id="descrizione" required>
                     </textarea>
                 </div>
                 <div class="container">
@@ -47,44 +67,41 @@
                                             <input type="text" class="form-control" id="insertInsegnanti">
                                         </div>
                                         <div class="col">
-                                            <h3 id="addInsegnante"> Aggiungi </h3>
+                                            <img id="addInsegnante" width="32" height="32" src="./../Immagini/add_icon.png" alt="add">
                                         </div>
                                     </div>
-                                    <!--<div class="row" id="risultatoInsegnanti">
-
-                                    </div>-->
                                 </div>
                             </center>
                         </div>
                         <div class="col">
                             <center>
                                 <h2>Aggiungi studenti</h2>
-                                <div class="container">
+                                <div class="container" id="risultatoStudenti">
                                     <div class="row">
                                         <div class="col">
                                             <input type="text" class="form-control" id="insertStudenti">
                                         </div>
                                         <div class="col">
-                                            <h3 id="addStudente"> Aggiungi </h3>
+                                            <img id="addStudente" width="32" height="32" src="./../Immagini/add_icon.png" alt="add">
                                         </div>
                                     </div>  
-                                </div>
-                                <div id="container risultatoStudenti">
                                 </div>
                             </center>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <input style="display:none;" type="text" name="contI" id="contI">
+                <input style="display:none;" type="text" name="contS" id="contS">
+                <center>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </center>
             </form>
-
         </div>
         <div class="col-1">
         </div>
     </div>
 </div>
     <script>
-
 
         /* Metodo per rimuovere l'insegnate aggiunto */
         function cancella(elemento)
@@ -94,17 +111,17 @@
 
         /* Metodo per trovare se un insegnante è già stato aggiunto */
 
-        function trova(insegnante)
+        function trova(utente,tipo)
         {
             let total = [];
             let trovato = false;
-            $('#risultatoInsegnanti').find('input.insegnanti').each(function(index, elem){
+            $('#risultato'+tipo[0].toUpperCase() + tipo.slice(1)).find('input.' + tipo).each(function(index, elem){ // Insegnanti ->>> insegnanti
                 total.push(elem.value);
             });
             console.log(total);
             for (let i=0; i<total.length; i++)
             {
-                if (total[i]===insegnante)
+                if (total[i]===utente)
                 {
                     trovato = true
                     break;
@@ -116,31 +133,45 @@
         /* Evento richiamato quando la pagina è caricata */
         $(document).ready(function(){
             let utenteJson = '<?php echo $_SESSION["Utente"] ?>';
-            let utenteObj = JSON.parse(utenteJson); // oggetto Utente della sessione preso da php
+            let utenteObj = JSON.parse(utenteJson); // oggetto Utente della sessione
 
-            console.log(utenteObj.Email);
-
-            function richiesta(email, cont)
+            function richiesta(email, cont, tipo)
             {
                 $.post({
                     url:"./query.php",
-                    data:{query:email, cont:cont},
+                    data:
+                        {
+                            query:email, 
+                            cont:cont, 
+                            tipo:tipo
+                        },
                     success:
                         function(data)
                         {
-                            $('#risultatoInsegnanti').append(data);
+                            console.log(data);
+                            switch (tipo)
+                            {
+                                case 'i':
+                                    $('#risultatoInsegnanti').append(data);
+                                break;
+                                case 's':
+                                    $('#risultatoStudenti').append(data);
+                                break;
+                            }
                         }
                 });
 
             } 
-            $('#addInsegnante').click(function(){
-                let email = $('#insertInsegnanti').val();
+            $('#addStudente').click(function(){
+                let email = $('#insertStudenti').val();
+                $('#insertStudenti').val("");
                 if(email != '' && email!==utenteObj.Email)
                 {
-                    if (!trova(email))
+                    if (!trova(email, 'studenti'))
                     {
-                        let cont = $('input.insegnanti').length-1;
-                        richiesta(email, cont);
+                        let cont = $('input.studenti').length;
+                        $('#contS').val(cont);
+                        richiesta(email, cont, 's');
                     }
                     else
                     {
@@ -149,7 +180,29 @@
                 }
                 else
                 {
-                    alert('Il campo deve essere riempito');
+                    alert('Valore non valido');
+                }
+            });
+
+            $('#addInsegnante').click(function(){
+                let email = $('#insertInsegnanti').val();
+                $('#insertInsegnanti').val("");
+                if(email != '' && email!==utenteObj.Email)
+                {
+                    if (!trova(email, 'insegnanti'))
+                    {
+                        let cont = $('input.insegnanti').length;
+                        $('#contI').val(cont);
+                        richiesta(email, cont, 'i');
+                    }
+                    else
+                    {
+                        alert('l\'utente è già stato inserito');
+                    }
+                }
+                else
+                {
+                    alert('Valore non valido');
                 }
             });
         });

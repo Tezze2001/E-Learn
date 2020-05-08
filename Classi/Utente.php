@@ -1,5 +1,6 @@
 <?php
 require_once ('Database.php');
+
 /**
  * Classe per la gestione degli utenti
  *  
@@ -143,11 +144,31 @@ class Utente extends Database
         else
             throw new Exception("Il valore non è accettabile");
     }
+    /** 
+     * Metodo per l'inserimento di un utente
+     * 
+     * @param int $Id
+     * @return int id se sesiste
+     * @return boolean false se non esiste
+     * @access public
+     */
+    public function existId()
+    {
+        $ris = $this->selectUtenti();
+        
+        if ($ris === 0)
+        {
+            return false;
+        }
+        else
+        {
+            return $ris[0]['Id'];
+        }
+    }
     
     /** 
      * Metodo per l'inserimento di un utente
      * 
-     * @param Utente $Utente
      * @return array $data[] dati estratti dal DB 
      * @return int 0 nessun utente trovato
      * @access private
